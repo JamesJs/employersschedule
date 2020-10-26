@@ -2,53 +2,7 @@ const maxNumeroAleatorioSexta = 3;
 const minNumeroAleatorioSegunda = 1;
 const maxNumeroAleatorio = 4;
 const limiteDePessoas = 7;
-const quantMaxDeTentativas = 300000;
-const ULTIMATENTATIVA = 10;
-
-function escolhaFinal(pessoa){
-    var indiceDeCorrecao = 0
-    if(pessoa ==='brenoEmatheus'){
-        indiceDeCorrecao = 1
-    }
-    for(dia in novaData){
-        if((novaData[dia].length < 7 - indiceDeCorrecao)
-            && (novaData[dia].indexOf(pessoa)===-1)    
-        )
-        {
-            novaData[dia][novaData[dia].length] = pessoa;
-            return 0;
-        }
-    }
-    for(dia in novaData){
-        if(novaData[dia].indexOf(pessoa)===-1)
-        {
-            novaData[dia][novaData[dia].length] = pessoa;
-            return 0;
-        }
-    }
-
-}
-
-
-
-
-function colocaBrenoEMatheusNoInicio(pessoas){
-    var i =0;
-    var arrayBM = [];
-    pessoas.forEach((pessoa)=>{
-        if(pessoa==='brenoEmatheus'){
-            arrayBM[i] = pessoa;
-            
-            i++;
-        }
-    })
-    
-    pessoas= pessoas.filter((pessoa)=>pessoa!=='brenoEmatheus');
-
-    return arrayBM.concat(pessoas);
-    
-}
-
+const quantMaxDeTentativas = 5;
 function calculoDeQuantDePessoas(arrayPessoas){
     if(arrayPessoas.indexOf("brenoEmatheus")===-1){
        
@@ -71,43 +25,25 @@ function organizaPessoas(pessoa){
         var limitCont = 0;
         var pessoasControle = 0;
         var diasControle = 0;
-        var ultimaTentativa = 0;
         while(!podeNoDia){
             if(limitCont === quantMaxDeTentativas){
-                if(diasControle === maxNumeroAleatorio){
-                    diasControle = 0;
-                    ultimaTentativa++;
-                    pessoasControle = 0;
-                
-                }
-                if(ultimaTentativa ===ULTIMATENTATIVA){
-                    escolhaFinal(pessoa);
-                    return 0;
-                }
-                    //console.log(pessoasControle,diasControle,'estorou');
-                    
-                        if(novaData[diasDaSemana[diasControle]].indexOf(pessoaAdd)===-1){
-                            if(novaData[diasDaSemana[diasControle]][novaData[diasDaSemana[diasControle]].length-1-pessoasControle]==='brenoEmatheus'
-                            ||novaData[diasDaSemana[diasControle]][novaData[diasDaSemana[diasControle]].length-1-pessoasControle]===pessoaAdd){
+                    console.log(pessoasControle,diasControle,'estorou');
+                    var dia = diasControle === 0 ? 'segunda' : 
+                    diasControle === 1 ? 'sexta' :  diasControle === 2 ? 'terca' :
+                    diasControle === 3 ? 'quarta' : 'quinta';
+                        if(novaData[dia].indexOf(pessoaAdd)===-1){
+                            if(novaData[dia][novaData[dia].length-1-pessoasControle]==='brenoEmatheus'){
                                 pessoasControle++;
                             }
-                            if(pessoasControle >= novaData[diasDaSemana[diasControle]].length){
+                            console.log('nova pessoa ',novaData[dia][novaData[dia].length-1-pessoasControle])
+                            var aux = pessoaAdd;
+                            pessoaAdd = novaData[dia][novaData[dia].length-1-pessoasControle];
+                            novaData[dia][novaData[dia].length-1-pessoasControle]= aux;
+                           
+                            if(pessoasControle === novaData[dia][novaData[dia].length-1-pessoasControle]){
                                 pessoasControle = 0;
                                 diasControle++;
                             }
-                            while((novaData[diasDaSemana[diasControle]].length===0)||
-                                (pessoaAdd === 'brenoEmatheus'&&
-                                novaData[diasDaSemana[diasControle]].
-                                length>=6)){
-                                diasControle++;
-                            }
-                           
-                            //console.log('nova pessoa ',novaData[diasDaSemana[diasControle]][novaData[diasDaSemana[diasControle]].length-1-pessoasControle])
-                            var aux = pessoaAdd;
-                            pessoaAdd = novaData[diasDaSemana[diasControle]][novaData[diasDaSemana[diasControle]].length-1-pessoasControle];
-                            novaData[diasDaSemana[diasControle]][novaData[diasDaSemana[diasControle]].length-1-pessoasControle]= aux;
-                            //console.log(novaData)
-                           
                             
                             pessoasControle++;
                             
@@ -120,7 +56,9 @@ function organizaPessoas(pessoa){
                         }else{
                             diasControle++;
                         }
-                        
+                        if(diasControle === 4){
+                            return 0;
+                        }
                     
                 
                 limitCont = 0;
@@ -197,11 +135,11 @@ var diasDaSemana={
     4:'sexta'
 }
 var data = {
-    segunda:["gabriel","yuri","daniel","dani",'leo','brenoEmatheus'],
-    terca:['gabriel','duda','gian','samuel','leo','daniel','rodrigo'],
-    quarta:['gabriel','duda','yuri','thiago','gian','rodrigo','hellen'],
+    segunda:["gabriel","gian","yuri","daniel","samuel","leo","thiago"],
+    terca:['gabriel','duda','gian','brenoEmatheus','daniel','rodrigo'],
+    quarta:['gabriel','duda','yuri','brenoEmatheus','rodrigo','hellen'],
     quinta:['hellen','dani','brenoEmatheus','leo','thiago','duda'],
-    sexta:['hellen','thiago','yuri','samuel','brenoEmatheus'],
+    sexta:['hellen','dani','leo','thiago','yuri','samuel'],
 }
 var sexta = data.sexta;
 var segunda = data.segunda;
@@ -236,6 +174,9 @@ var pessoas = pessoasComRepeticaoSegundaeSexta.sort().concat(
     pessoasTercaQuartaQuinta.sort()
     );
 
+console.log(pessoas);
+
+
 var novaData = {
     segunda:[],
     terca:[],
@@ -243,10 +184,10 @@ var novaData = {
     quinta:[],
     sexta:[],
 }
-colocaBrenoEMatheusNoInicio(pessoas).forEach(pessoa=>{
+pessoas.forEach(pessoa=>{
     
-    //console.log(novaData);
-    //console.log("===================Essa e a pessoa:",pessoa);
+    console.log(novaData);
+    console.log("===================Essa e a pessoa:",pessoa);
     organizaPessoas(pessoa)
     
 
